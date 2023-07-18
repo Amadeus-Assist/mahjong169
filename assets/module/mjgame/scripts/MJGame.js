@@ -84,7 +84,8 @@ cc.Class({
             sprite.spriteFrame = null;
         }
         //获取真实宽度
-        var realwidth = cc.director.getVisibleSize().width;
+        console.log("cc.director: ", cc.director);
+        var realwidth = cc.view.getVisibleSize().width;
         myholds.scaleX *= realwidth/1280;
         myholds.scaleY *= realwidth/1280;  
         //加载前后左右

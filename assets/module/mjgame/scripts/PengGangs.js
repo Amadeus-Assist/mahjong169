@@ -22,7 +22,8 @@ cc.Class({
         var gameChild = this.node.getChildByName("game");
         var myself = gameChild.getChildByName("myself");
         var pengangroot = myself.getChildByName("penggangs");
-        var realwidth = cc.director.getVisibleSize().width;
+        console.log("cc.director: ", cc.director);
+        var realwidth = cc.view.getVisibleSize().width;
         var scale = realwidth / 1280;
         pengangroot.scaleX *= scale;
         pengangroot.scaleY *= scale;

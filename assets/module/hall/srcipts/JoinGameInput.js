@@ -34,7 +34,7 @@ cc.Class({
             }
             else{
                 var content = "房间["+ roomId +"]不存在，请重新输入!";
-                if(ret.errcode == 4){
+                if(ret.errcode == 1){
                     content = "房间["+ roomId + "]已满!";
                 }
                 cc.vv.alert.show("提示",content);

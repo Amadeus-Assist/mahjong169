@@ -1,4 +1,4 @@
-﻿var HALL_IP = "192.168.31.22";
+﻿var HALL_IP = "127.0.0.1";
 var HALL_CLIENT_PORT = 9001;
 var HALL_ROOM_PORT = 9002;
 
@@ -7,10 +7,10 @@ var ROOM_PRI_KEY = "~!@#$(*&^%$&";
 
 exports.mysql = function(){
 	return {
-		HOST:'192.168.31.22',
-		USER:'root',
-		PSWD:'qq1314',
-		DB:'qqq',
+		HOST:'127.0.0.1',
+		USER:'mahjong',
+		PSWD:'123456',
+		DB:'mahjong169',
 		PORT:3306,
 	}
 }

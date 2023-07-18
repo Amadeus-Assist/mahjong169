@@ -6,9 +6,14 @@ var roomMgr = require('./roommgr');
 var userMgr = require('./usermgr');
 var io = null;
 exports.start = function(config,mgr){
-	io = require('socket.io')(config.CLIENT_PORT);
-	
+	const express = require("express");
+	const socketServer = express().listen(config.CLIENT_PORT, config.CLIENT_IP, function() {
+		console.log("socket server listen on: ", config.CLIENT_PORT);
+	})
+	io = require('socket.io')(socketServer);
+	// console.log("socket io: ", io);
 	io.sockets.on('connection',function(socket){
+		console.log("socket connected");
 		socket.on('login',function(data){
 			data = JSON.parse(data);
 			if(socket.userId != null){

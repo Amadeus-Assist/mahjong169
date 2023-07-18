@@ -163,7 +163,7 @@ app.get('/create_private_room',function(req,res){
 				if(err == 0 && roomId != null){
                     //进入房间
 					room_service.enterRoom(userId,name,roomId,function(errcode,enterInfo){
-						if(enterInfo){
+						if(errcode == 0){
 							var ret = {
 								roomid:roomId,
 								ip:enterInfo.ip,
@@ -173,8 +173,9 @@ app.get('/create_private_room',function(req,res){
 							};
 							ret.sign = crypto.md5(ret.roomid + ret.token + ret.time + config.ROOM_PRI_KEY);
 							http.send(res,0,"ok",ret);
-						}
-						else{
+						} else if (errcode == 1) {
+							http.send(res,errcode,"room is full.");
+						} else if (errcode == 2) {
 							http.send(res,errcode,"room doesn't exist.");
 						}
 					});
@@ -216,7 +217,8 @@ app.get('/enter_private_room',function(req,res){
 		//todo
 		//进入房间
 		room_service.enterRoom(userId,name,roomId,function(errcode,enterInfo){
-			if(enterInfo){
+			if(errcode == 0){
+				console.log("enter room1")
 				var ret = {
 					roomid:roomId,
 					ip:enterInfo.ip,
@@ -224,11 +226,14 @@ app.get('/enter_private_room',function(req,res){
 					token:enterInfo.token,
 					time:Date.now()
 				};
-				ret.sign = crypto.md5(roomId + ret.token + ret.time + config.ROOM_PRI_KEY);
+				ret.sign = crypto.md5(ret.roomid + ret.token + ret.time + config.ROOM_PRI_KEY);
 				http.send(res,0,"ok",ret);
-			}
-			else{
-				http.send(res,errcode,"enter room failed.");
+			} else if (errcode == 1) {
+				console.log("enter room2")
+				http.send(res,errcode,"room is full.");
+			} else if (errcode == 2) {
+				console.log("enter room3")
+				http.send(res,errcode,"room doesn't exist.");
 			}
 		});
 	});

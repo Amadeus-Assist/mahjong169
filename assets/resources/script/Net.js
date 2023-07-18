@@ -38,6 +38,7 @@ var Global = cc.Class({
                 'force new connection': true,
                 'transports':['websocket', 'polling']
             }
+            console.log("ip in connect: ", this.ip);
             this.sio = window.io.connect(this.ip,opts);
             this.sio.on('reconnect',function(){
                 console.log('reconnection');

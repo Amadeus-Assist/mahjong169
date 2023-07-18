@@ -22,9 +22,11 @@ app.all('*', function(req, res, next) {
 });
 
 app.get('/get_server_info',function(req,res){
+	console.log("get_server_info  called");
 	var serverId = req.query.serverid;
 	var sign = req.query.sign;
 	console.log(serverId);
+	console.log("config.SERVER_ID: ", config.SERVER_ID);
 	console.log(sign);
 	if(serverId  != config.SERVER_ID || sign == null){
 		http.send(res,1,"invalid parameters");

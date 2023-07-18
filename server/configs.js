@@ -1,18 +1,18 @@
-﻿var HALL_IP = "192.168.31.22";
+﻿var HALL_IP = "127.0.0.1";
 var HALL_CLIENT_PORT = 9001;
 var HALL_ROOM_PORT = 9002;
 
 var ACCOUNT_PRI_KEY = "^&*#$%()@";
 var ROOM_PRI_KEY = "~!@#$(*&^%$&";
 
-var LOCAL_IP = '192.168.31.22';
+var LOCAL_IP = '127.0.0.1';
 
 exports.mysql = function(){
 	return {
-		HOST:'192.168.31.22',
-		USER:'root',
-		PSWD:'qq1314',
-		DB:'qqq',
+		HOST:'127.0.0.1',
+		USER:'mahjong',
+		PSWD:'123456',
+		DB:'mahjong169',
 		PORT:3306,
 	}
 };
@@ -48,7 +48,7 @@ exports.hall_server = function(){
 //游戏服配置
 exports.game_server = function(){
 	return {
-		SERVER_ID:"001",
+		SERVER_ID:"127.0.0.1:10000",
 		
 		//暴露给大厅服的HTTP端口号
 		HTTP_PORT:9003,
@@ -64,6 +64,6 @@ exports.game_server = function(){
 		
 		//暴露给客户端的接口
 		CLIENT_IP:HALL_IP,
-		CLIENT_PORT:10000,
+		CLIENT_PORT:10001,
 	};
 };
