@@ -230,6 +230,8 @@ cc.Class({
         cc.vv.net.addHandler("new_user_comes_push",function(data){
             //console.log(data);
             var seatIndex = data.seatindex;
+            console.log("new_user_comes_push, data: ", data);
+            console.log("new_user_comes_push, self.seats[seatIndex]: ", self.seats[seatIndex]);
             if(self.seats[seatIndex].userid > 0){
                 self.seats[seatIndex].online = true;
             }
@@ -244,6 +246,8 @@ cc.Class({
             //console.log(data);
             var userId = data.userid;
             var seat = self.getSeatByID(userId);
+            console.log("user_state_push, data: ", data);
+            console.log("user_state_push, seat: ", seat);
             seat.online = data.online;
             self.dispatchEvent('user_state_changed',seat);
         });

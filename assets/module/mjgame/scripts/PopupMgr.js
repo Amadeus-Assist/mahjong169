@@ -43,7 +43,8 @@ cc.Class({
         
         var self = this;
         this.node.on("dissolve_notice",function(event){
-            var data = event.detail;
+            console.log("dissolve_notice, event: ", event);
+            var data = event;
             self.showDissolveNotice(data);
         });
         

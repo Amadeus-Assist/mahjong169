@@ -65,7 +65,7 @@ var Global = cc.Class({
                         this.fnDisconnect = value;
                     }
                     else{
-                        console.log("register:function " + key);
+                        // console.log("register:function " + key);
                         this.sio.on(key,value);                        
                     }
                 }

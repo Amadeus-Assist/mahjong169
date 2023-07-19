@@ -27,7 +27,7 @@ cc.Class({
 
     // called every frame, uncomment this function to activate update callback
     update: function (dt) {
-        this.target.rotation = this.target.rotation - dt*90;
+        this.target.angle = this.target.angle - dt*90;
     },
 
     show:function(content){

@@ -234,9 +234,7 @@ exports.isCreator = function(roomId,userId){
 
 exports.enterRoom = function(roomId,userId,userName,callback){
 	var fnTakeSeat = function(room){
-		console.log("fnTakeSeat called");
 		if(exports.getUserRoom(userId) == roomId){
-			console.log("fnTakeSeat1");
 			//已存在
 			return 0;
 		}
@@ -252,36 +250,27 @@ exports.enterRoom = function(roomId,userId,userName,callback){
 				};
 				//console.log(userLocation[userId]);
 				db.update_seat_info(roomId,i,seat.userId,"",seat.name);
-				console.log("fnTakeSeat2");
 				//正常
 				return 0;
 			}
 		}	
-		console.log("fnTakeSeat3");
 		//房间已满
 		return 1;	
 	}
-	console.log("enterRoom called");
 	var room = rooms[roomId];
 	if(room){
-		console.log("enterRoom1");
-		console.log("roomInfo: ", room);
 		var ret = fnTakeSeat(room);
 		callback(ret, room);
 	}
 	else{
-		console.log("enterRoom2");
 		db.get_room_data(roomId,function(dbdata){
 			if(dbdata == null){
-				console.log("enterRoom3");
 				//找不到房间
 				callback(2);
 			}
 			else{
 				//construct room.
-				console.log("enterRoom4");
 				room = constructRoomFromDb(dbdata);
-				console.log("roomInfo: ", room);
 				//
 				var ret = fnTakeSeat(room);
 				callback(ret, room);

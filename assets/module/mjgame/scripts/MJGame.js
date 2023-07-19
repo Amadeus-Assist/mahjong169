@@ -149,7 +149,8 @@ cc.Class({
         });
         //出牌
         this.node.on('game_chupai',function(data){
-            data = data.detail;
+            console.log("game_chupai, data: ", data);
+            data = data;
             self.hideChupai();
             self.checkQueYiMen();
             if(data.last != cc.vv.gameNetMgr.seatIndex){
@@ -162,7 +163,7 @@ cc.Class({
         //摸牌
         this.node.on('game_mopai',function(data){
             self.hideChupai();
-            data = data.detail;
+            data = data;
             var pai = data.pai;
             var localIndex = cc.vv.gameNetMgr.getLocalIndex(data.seatIndex);
             if(localIndex == 0){
@@ -177,11 +178,12 @@ cc.Class({
         });
         
         this.node.on('game_action',function(data){
-            self.showAction(data.detail);
+            console.log("game_action, data: ", data);
+            self.showAction(data);
         });
         
         this.node.on('hupai',function(data){
-            var data = data.detail;
+            var data = data;
             //如果不是玩家自己，则将玩家的牌都放倒
             var seatIndex = data.seatindex;
             var localIndex = cc.vv.gameNetMgr.getLocalIndex(seatIndex);
@@ -208,6 +210,9 @@ cc.Class({
                 } 
             }
             else{
+                console.log("hupai, hupai.getChildByName('sprHu'): ", hupai.getChildByName("sprHu"));
+                console.log("hupai, hupai.getChildByName('sprZimo'): ", hupai.getChildByName("sprZimo"));
+                console.log("hupai, data.iszimo: ", data.iszimo);
                 hupai.getChildByName("sprHu").active = !data.iszimo;
                 hupai.getChildByName("sprZimo").active = data.iszimo;
                 
@@ -252,7 +257,7 @@ cc.Class({
         
         this.node.on('game_chupai_notify',function(data){
             self.hideChupai();
-            var seatData = data.detail.seatData;
+            var seatData = data.seatData;
             //如果是自己，则刷新手牌
             if(seatData.seatindex == cc.vv.gameNetMgr.seatIndex){
                 self.initMahjongs();                
@@ -261,14 +266,14 @@ cc.Class({
                 self.initOtherMahjongs(seatData);
             }
             self.showChupai();
-            var audioUrl = cc.vv.mahjongmgr.getAudioURLByMJID(data.detail.pai);
+            var audioUrl = cc.vv.mahjongmgr.getAudioURLByMJID(data.pai);
             cc.vv.audioMgr.playSFX(audioUrl);
         });
         
         this.node.on('guo_notify',function(data){
             self.hideChupai();
             self.hideOptions();
-            var seatData = data.detail;
+            var seatData = data;
             //如果是自己，则刷新手牌
             if(seatData.seatindex == cc.vv.gameNetMgr.seatIndex){
                 self.initMahjongs();                
@@ -288,7 +293,7 @@ cc.Class({
         this.node.on('peng_notify',function(data){    
             self.hideChupai();
             
-            var seatData = data.detail;
+            var seatData = data;
             if(seatData.seatindex == cc.vv.gameNetMgr.seatIndex){
                 self.initMahjongs();                
             }
@@ -304,7 +309,7 @@ cc.Class({
         this.node.on('gang_notify',function(data){
             cc.log("gang","ppppppppp")
             self.hideChupai();
-            var data = data.detail;
+            var data = data;
             var seatData = data.seatData;
             var gangtype = data.gangtype;
             if(seatData.seatindex == cc.vv.gameNetMgr.seatIndex){
@@ -326,7 +331,7 @@ cc.Class({
         });
         //暗杠
         this.node.on("hangang_notify",function(data){
-            var data = data.detail;
+            var data = data;
             var localIndex = self.getLocalIndex(data);
             self.playEfx(localIndex,"play_gang");
             cc.vv.audioMgr.playSFX("nv/gang.mp3");

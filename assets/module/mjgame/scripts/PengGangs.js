@@ -31,15 +31,15 @@ cc.Class({
         var self = this;
         this.node.on('peng_notify',function(data){
             //刷新所有的牌
-            //console.log(data.detail);
-            var data = data.detail;
+            //console.log(data);
+            var data = data;
             self.onPengGangChanged(data);
         });
         
         this.node.on('gang_notify',function(data){
             //刷新所有的牌
-            //console.log(data.detail);
-            var data = data.detail;
+            //console.log(data);
+            var data = data;
             self.onPengGangChanged(data.seatData);
         });
         
@@ -145,7 +145,7 @@ cc.Class({
         }
         else if(side == "right"){
             pgroot.y = (index * 25 * 3);
-            pgroot.setLocalZOrder(-index);
+            pgroot.zIndex = -index;
         }
         else if(side == "myself"){
             pgroot.x = index * 55 * 3 + index * 10;                    
