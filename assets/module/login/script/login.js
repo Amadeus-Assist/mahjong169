@@ -31,6 +31,9 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
+        account: cc.EditBox,
+        pwd: cc.EditBox,
+        alert: cc.Label,
         // foo: {
         //    default: null,
         //    url: cc.Texture2D,  // optional, default is typeof default
@@ -59,6 +62,7 @@ cc.Class({
         }
         //url 赋值master_url
         cc.vv.http.url = cc.vv.http.master_url;
+        cc.vv.loginAlert = this.alert;
         //sockect连接模块  参数 事件 方法
         cc.vv.net.addHandler('push_need_create_role',function(){
             console.log("onLoad:push_need_create_role");
@@ -71,8 +75,9 @@ cc.Class({
         
         //判断是否原生 是否是windows
         if(!cc.sys.isNative || cc.sys.os == cc.sys.OS_WINDOWS){
-            cc.find("Canvas/global/button/btn_yk").active = true;//显示游客登入按钮
+            // cc.find("Canvas/global/button/btn_yk").active = true;//显示游客登入按钮
         }
+        cc.vv.userMgr.loginAuth(null, null);
     },
     
     start:function(){
@@ -98,6 +103,10 @@ cc.Class({
             console.log("oh ho~~~");
             this._mimaIndex = 0;
         }
+    },
+
+    onBtnLoginClicked:function() {
+        cc.vv.userMgr.loginAuth(this.account.string, this.pwd.string);
     }
 
     // called every frame, uncomment this function to activate update callback

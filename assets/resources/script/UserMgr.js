@@ -15,7 +15,43 @@ cc.Class({
         
         oldRoomId:null, //已创房间号
     },
-    
+
+    loginAuth:function(account,pwd) {
+        if (!account || !pwd) {
+            account = cc.sys.localStorage.getItem("mahjong169account");
+            pwd = cc.sys.localStorage.getItem("mahjong169pwd");
+        }
+        if (account && pwd) {
+            cc.vv.http.sendRankingRequest("/ranking/gameauth", {account:account,pwd:pwd},this.onLoginAuth)
+        }
+    },
+
+    //接受返回值 ret  服务端ret
+    // var ret = {
+	// 	errcode:0,
+	// 	errmsg:"ok",
+	// 	account:account,
+    //  pwd:pwd,
+	// 	nickname:nickname,
+	// 	sign:sign
+	// }  
+    onLoginAuth:function(ret) {
+        var self = cc.vv.userMgr;
+        if (ret.errcode !== 0) {
+            console.log("game auth failed");
+            cc.vv.loginAlert.node.active=true;
+        }else {
+            self.account = ret.account; //账号
+            self.userName = ret.nickname;
+            self.sign = ret.sign;   //标志
+            cc.vv.http.url = "http://" + cc.vv.SI.hall;  //设置URL为取得版本接口时 ret.hall
+            cc.sys.localStorage.setItem("mahjong169account", ret.account);
+            cc.sys.localStorage.setItem("mahjong169pwd", ret.pwd);
+            console.log("before login()");
+            self.login();
+        }
+    },
+
     //游客访问 游客注册
     guestAuth:function(){
         //赋初值
@@ -55,7 +91,7 @@ cc.Class({
             self.login();  //获取成功后登陆
         }   
     },
-    
+
     //登录
     login:function(){
         var self = this; 
@@ -67,7 +103,8 @@ cc.Class({
             else{
                 if(!ret.userid){
                     //jump to register user info.  账户还未创建
-                    cc.director.loadScene("createrole");  //创建建名字场景
+                    // cc.director.loadScene("createrole");  //创建建名字场景
+                    self.create(self.userName);
                 }
                 else{
                     //已经注册过  将信息获取下来
@@ -87,10 +124,49 @@ cc.Class({
                 }
             }
         };
+        console.log("before 正在登录游戏");
         cc.vv.wc.show("正在登录游戏");  //显示dialog
+        console.log("after 正在登录游戏");
         //登录请求参数 账户 标志
         cc.vv.http.sendRequest("/login",{account:this.account,sign:this.sign},onLogin);
     },
+    
+    
+    // //登录
+    // login:function(){
+    //     var self = this; 
+    //     //登录方法
+    //     var onLogin = function(ret){
+    //         if(ret.errcode !== 0){
+    //             console.log(ret.errmsg);
+    //         }
+    //         else{
+    //             if(!ret.userid){
+    //                 //jump to register user info.  账户还未创建
+    //                 cc.director.loadScene("createrole");  //创建建名字场景
+    //             }
+    //             else{
+    //                 //已经注册过  将信息获取下来
+    //                 console.log(ret);
+    //                 self.account = ret.account;
+    //     			self.userId = ret.userid;
+    //     			self.userName = ret.name;
+    //     			self.lv = ret.lv;
+    //     			self.exp = ret.exp;
+    //     			self.coins = ret.coins;
+    //     			self.gems = ret.gems;
+    //                 self.roomData = ret.roomid;
+    //                 // cc.sys.localStorage.setItem("roomid",ret.roomid); //设置本地存储 账号为本地时间
+    //                 self.sex = ret.sex;
+    //                 self.ip = ret.ip;
+    //     			cc.director.loadScene("hall"); //加载游戏大厅场景
+    //             }
+    //         }
+    //     };
+    //     cc.vv.wc.show("正在登录游戏");  //显示dialog
+    //     //登录请求参数 账户 标志
+    //     cc.vv.http.sendRequest("/login",{account:this.account,sign:this.sign},onLogin);
+    // },
     
     //创建用户
     create:function(name){

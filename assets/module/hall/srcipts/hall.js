@@ -24,6 +24,7 @@ cc.Class({
         btnJoinGame:cc.Node, //加入游戏
         btnReturnGame:cc.Node,//返回游戏
         joinGameWin:cc.Node,//加入房间
+        logoutBtn:cc.Node,
         dezhoupk:{
             default:null,
             type:cc.Sprite
@@ -258,6 +259,7 @@ cc.Class({
         this.xiangqi.node.active=false
         this.buyu.node.active=false
         this.sencond.active=true
+        this.logoutBtn.active=false
     },
      //显示节点
      shownode:function(){
@@ -268,6 +270,7 @@ cc.Class({
         this.xiangqi.node.active=true
         this.buyu.node.active=true
         this.sencond.active=false
+        this.logoutBtn.active=true
     },
     //创建房间按钮显示
     onJoinGameClicked:function(){
@@ -287,6 +290,12 @@ cc.Class({
         }
         console.log("onCreateRoomClicked");
         this.createRoomWin.active = true;   
+    },
+
+    onLogout:function() {
+        cc.sys.localStorage.removeItem("mahjong169account");
+        cc.sys.localStorage.removeItem("mahjong169pwd");
+        cc.director.loadScene("login");
     },
 
     // called every frame, uncomment this function to activate update callback

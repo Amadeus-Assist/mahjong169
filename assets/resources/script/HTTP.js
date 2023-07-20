@@ -1,4 +1,5 @@
 var URL = "http://127.0.0.1:9000";
+var rankingURL = "http://127.0.0.1:18888";
 
 
 cc.VERSION = 20180108; //版本号
@@ -10,6 +11,7 @@ var HTTP = cc.Class({
         userId : 0,
         master_url:URL,
         url:URL,
+        ranking_url: rankingURL,
         //发送请求  路径 ，数据,handler,额外url
         sendRequest : function(path,data,handler,extraUrl){
             var xhr = cc.loader.getXMLHttpRequest();
@@ -56,6 +58,9 @@ var HTTP = cc.Class({
             }
             xhr.send();
             return xhr;
+        },
+        sendRankingRequest : function(path,data,handler){
+            return cc.vv.http.sendRequest(path, data, handler, HTTP.ranking_url);
         },
     },
 });
