@@ -7,7 +7,7 @@ var userMgr = require('./usermgr');
 var io = null;
 exports.start = function(config,mgr){
 	const express = require("express");
-	const socketServer = express().listen(config.CLIENT_PORT, config.CLIENT_IP, function() {
+	const socketServer = express().listen(config.CLIENT_PORT, function() {
 		console.log("socket server listen on: ", config.CLIENT_PORT);
 	})
 	io = require('socket.io')(socketServer);
