@@ -107,6 +107,10 @@ cc.Class({
 
     onBtnLoginClicked:function() {
         cc.vv.userMgr.loginAuth(this.account.string, this.pwd.string);
+    },
+
+    onChangePwdClicked:function(){
+        cc.director.loadScene("changepwd");
     }
 
     // called every frame, uncomment this function to activate update callback

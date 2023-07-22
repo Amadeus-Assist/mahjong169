@@ -52,6 +52,10 @@ cc.Class({
         }
     },
 
+    changePwd:function(account,prevPassword,newPassword,handler){
+        cc.vv.http.sendRankingRequest("/ranking/player/changepwd",{account:account,prevPassword:prevPassword,newPassword:newPassword},handler);
+    },
+
     //游客访问 游客注册
     guestAuth:function(){
         //赋初值

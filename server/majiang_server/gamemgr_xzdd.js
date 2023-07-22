@@ -1854,12 +1854,12 @@ function doGang(game,turnSeat,seatData,gangtype,numOfCnt,pai){
     if(gangtype == "angang"){
         seatData.angangs.push(pai);
         var ac = recordUserAction(game,seatData,"angang");
-        ac.score = 2;
+        ac.score = 1;
     }
     else if(gangtype == "diangang"){
         seatData.diangangs.push(pai);
         var ac = recordUserAction(game,seatData,"diangang",gameTurn);
-        ac.score = 2;
+        ac.score = 1;
         var fs = turnSeat;
         recordUserAction(game,fs,"fanggang",seatIndex);
     }

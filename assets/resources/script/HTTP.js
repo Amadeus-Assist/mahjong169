@@ -1,6 +1,9 @@
 var URL = "http://34.86.156.89:9000";
 var rankingURL = "http://34.86.156.89:18888";
 
+// var URL = "http://127.0.0.1:9000";
+// var rankingURL = "http://127.0.0.1:18888";
+
 
 cc.VERSION = 20180108; //版本号
 var HTTP = cc.Class({
