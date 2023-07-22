@@ -1,11 +1,11 @@
-﻿var HALL_IP = "127.0.0.1";
+﻿var HALL_IP = "34.86.156.89";
 var HALL_CLIENT_PORT = 9001;
 var HALL_ROOM_PORT = 9002;
 
 var ACCOUNT_PRI_KEY = "^&*#$%()@";
 var ROOM_PRI_KEY = "~!@#$(*&^%$&";
 
-var LOCAL_IP = '127.0.0.1';
+var LOCAL_IP = '34.86.156.89';
 
 exports.mysql = function(){
 	return {
@@ -48,7 +48,7 @@ exports.hall_server = function(){
 //游戏服配置
 exports.game_server = function(){
 	return {
-		SERVER_ID:"127.0.0.1:10001",
+		SERVER_ID:"34.86.156.89:10001",
 		
 		//暴露给大厅服的HTTP端口号
 		HTTP_PORT:9003,
