@@ -5,7 +5,7 @@ var HALL_ROOM_PORT = 9002;
 var ACCOUNT_PRI_KEY = "^&*#$%()@";
 var ROOM_PRI_KEY = "~!@#$(*&^%$&";
 
-var LOCAL_IP = '34.86.156.89';
+var LOCAL_IP = '127.0.0.1';
 
 exports.mysql = function(){
 	return {
