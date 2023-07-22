@@ -6,10 +6,10 @@ var creatingRooms = {};
 var userLocation = {};
 var totalRooms = 0;
 
-var DI_FEN = [1,2,5];
-var MAX_FAN = [3,4,5];
-var JU_SHU = [4,8];
-var JU_SHU_COST = [2,3];
+var DI_FEN = [1,2,5,10];
+var MAX_FAN = [3,4,5,6];
+var JU_SHU = [4,8,99999];
+var JU_SHU_COST = [2,3,0];
 
 function generateRoomId(){
 	var roomId = "";
@@ -158,7 +158,7 @@ exports.createRoom = function(creator,roomConf,gems,ip,port,callback){
 					for(var i = 0; i < 4; ++i){
 						roomInfo.seats.push({
 							userId:0,
-							score:0,
+							score:200,
 							name:"",
 							ready:false,
 							seatIndex:i,

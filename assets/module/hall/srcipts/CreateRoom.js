@@ -200,13 +200,14 @@ cc.Class({
             menqing:menqing,
             tiandihu:tiandihu,   
         }; 
+        console.log("create room, conf: ", conf);
         //请求
         var data = {
             account:cc.vv.userMgr.account,
             sign:cc.vv.userMgr.sign,
             conf:JSON.stringify(conf)
         };
-        console.log(data);
+        console.log("create room, data: ", data);
         cc.vv.wc.show("正在创建房间");
         cc.vv.http.sendRequest("/create_private_room",data,onCreate);   
     }

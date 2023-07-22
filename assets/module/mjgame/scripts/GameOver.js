@@ -85,7 +85,20 @@ cc.Class({
     },
     
     onGameOver_XZDD(data){
-        console.log(data);
+        function getSeatDirName(selfIdx, targetIdx) {
+            var localIdx = (targetIdx + 4 - selfIdx) % 4;
+            if (localIdx == 0) {
+                return "本家";
+            }else if(localIdx == 1) {
+                return "下家";
+            }else if (localIdx == 2) {
+                return "对家";
+            }else {
+                return "上家";
+            }
+        }
+
+        console.log("onGameOver_XZDD, data: ", data);
         if(data.length == 0){
             this._gameresult.active = true;
             return;
@@ -105,7 +118,6 @@ cc.Class({
         else{
             this._pingju.active = true;
         }
-        
             
         //显示玩家信息
         for(var i = 0; i < 4; ++i){
@@ -118,6 +130,11 @@ cc.Class({
             var actionArr = [];
             var is7pairs = false;
             var ischadajiao = false;
+            var chahuazhuArr = [];
+            var hupaiArr = [];
+
+            console.log("onGameOver_XZDD local index: ", )
+
             for(var j = 0; j < userData.actions.length; ++j){
                 var ac = userData.actions[j];
                 if(ac.type == "zimo" || ac.type == "ganghua" || ac.type == "dianganghua" || ac.type == "hu" || ac.type == "gangpaohu" || ac.type == "qiangganghu" || ac.type == "chadajiao"){
@@ -131,7 +148,11 @@ cc.Class({
                         actionArr.push("将七对");
                     }
                     else if(userData.pattern == "duidui"){
-                        actionArr.push("碰碰胡");
+                        if(userData.jingouhu) {
+                            actionArr.push("金钩钓");
+                        }else{
+                            actionArr.push("碰碰胡");
+                        }
                     }
                     else if(userData.pattern == "jiangdui"){
                         actionArr.push("将对");
@@ -155,6 +176,13 @@ cc.Class({
                     else if(ac.type == "chadajiao"){
                         ischadajiao = true;
                     }
+
+                    if (ac.type != "chadajiao") {
+                        for(var k = 0;k<ac.targets.length;k++) {
+                            hupaiArr.push(getSeatDirName(userData.seatIndex, ac.targets[k]));
+                        }
+                    }
+
                     hued = true;
                 }
                 else if(ac.type == "fangpao"){
@@ -180,28 +208,30 @@ cc.Class({
                 }
                 else if(ac.type == "beichadajiao"){
                     actionArr.push("被查叫");
+                }else if (ac.type == "chahuazhu") {
+                    chahuazhuArr.push(getSeatDirName(userData.seatIndex, ac.targets[0]));
                 }
             }
             
             if(hued){
+                if(userData.menqing){
+                    actionArr.push("门前清");
+                }
+
+                if(userData.duanyaojiu) {
+                    actionArr.push("断幺九");
+                }
+
                 if(userData.qingyise){
                     actionArr.push("清一色");
-                }
-                
-                if(userData.menqing){
-                    actionArr.push("门清");
                 }
                 
                 if(userData.zhongzhang){
                     actionArr.push("中张");
                 }
-                
-                if(userData.jingouhu){
-                    actionArr.push("金钩胡");
-                }
                                 
                 if(userData.haidihu){
-                    actionArr.push("海底胡");
+                    actionArr.push("海底捞");
                 }
                 
                 if(userData.tianhu){
@@ -220,6 +250,16 @@ cc.Class({
                     actionArr.push("查大叫");
                 }
             }
+
+            var chahuazhuStr = chahuazhuArr.join(", ");
+            var hupaiStr = hupaiArr.join(", ");
+
+            if(userData.chahuazhu) {
+                actionArr.push("查花猪("+chahuazhuStr+")");
+            }
+            if(userData.beichahuazhu) {
+                actionArr.push("被查花猪");
+            }
             
             for(var o = 0; o < 3;++o){
                 seatView.hu.children[o].active = false;    
@@ -231,6 +271,9 @@ cc.Class({
             seatView.username.string = cc.vv.gameNetMgr.seats[i].name;
             seatView.zhuang.active = cc.vv.gameNetMgr.button == i;
             seatView.reason.string = actionArr.join("、");
+            if (hued) {
+                seatView.reason.string = "(" + hupaiStr + ") " + seatView.reason.string;
+            }
             
             //胡牌的玩家才有番
             var fan = 0;

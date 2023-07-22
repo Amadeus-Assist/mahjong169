@@ -289,7 +289,49 @@ cc.Class({
             return;
         }
         console.log("onCreateRoomClicked");
-        this.createRoomWin.active = true;   
+        //包裹成对象
+        var conf = {
+            type:"xzdd",
+            difen:3,
+            zimo:0,
+            jiangdui:true,
+            huansanzhang:true,
+            zuidafanshu:3,
+            jushuxuanze:2,
+            dianganghua:0,
+            menqing:true,
+            tiandihu:true,   
+        }; 
+        console.log("create room, conf: ", conf);
+        //请求
+        var data = {
+            account:cc.vv.userMgr.account,
+            sign:cc.vv.userMgr.sign,
+            conf:JSON.stringify(conf)
+        };
+        console.log("create room, data: ", data);
+        cc.vv.wc.show("正在创建房间");
+        
+        var onCreate = function(ret){
+            if(ret.errcode !== 0){
+                //console.log(ret.errmsg);
+                //判断房卡
+                if(ret.errcode == 2222){
+                    cc.vv.alert.show("提示","房卡不足，创建房间失败!");  
+                }
+                else{
+                    cc.vv.alert.show("提示","创建房间失败,错误码:" + ret.errcode);
+                }
+            }
+            else{
+                //创建正常 连接服务器
+                cc.vv.gameNetMgr.connectGameServer(ret);
+                
+            }
+        };
+
+        cc.vv.http.sendRequest("/create_private_room",data,onCreate);   
+        // this.createRoomWin.active = true;   
     },
 
     onLogout:function() {

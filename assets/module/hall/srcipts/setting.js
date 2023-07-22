@@ -106,10 +106,12 @@ cc.Class({
             this.refreshVolume();
         }
         else if(event.target.name == "btn_yy_open"){
+            console.log("btn_yy_open clicked");
             cc.vv.audioMgr.setBGMVolume(1);
             this.refreshVolume();
         }
         else if(event.target.name == "btn_yy_close"){
+            console.log("btn_yy_close clicked");
             cc.vv.audioMgr.setBGMVolume(0);
             this.refreshVolume();
         }

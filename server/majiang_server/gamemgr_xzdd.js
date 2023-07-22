@@ -479,7 +479,7 @@ function isQingYiSe(gameSeatData){
 }
 
 function isMenQing(gameSeatData){
-    return (gameSeatData.pengs.length + gameSeatData.wangangs.length + gameSeatData.diangangs.length) == 0;
+    return (gameSeatData.pengs.length + gameSeatData.wangangs.length + gameSeatData.diangangs.length) == 0 && gameSeatData.iszimo && gameSeatData.pattern !== "7pairs" && gameSeatData.pattern !== "l7pairs" && gameSeatData.pattern !== "j7pairs";
 }
 
 function isZhongZhang(gameSeatData){
@@ -525,6 +525,37 @@ function isJiangDui(gameSeatData){
         return true;
     }
     
+    if(fn(gameSeatData.pengs) == false){
+        return false;
+    }
+    if(fn(gameSeatData.angangs) == false){
+        return false;
+    }
+    if(fn(gameSeatData.diangangs) == false){
+        return false;
+    }
+    if(fn(gameSeatData.wangangs) == false){
+        return false;
+    }
+    if(fn(gameSeatData.holds) == false){
+        return false;
+    }
+    return true;
+}
+
+function isDuanYaoJiu(gameSeatData) {
+    var fn = function(arr) {
+        for(var i = 0; i < arr.length; ++i){
+            var pai = arr[i];
+            if(pai == 0 || pai == 8 || pai == 9
+               || pai == 17 || pai == 18 || pai == 26
+               ){
+                return false;
+            }
+        }
+        return true;
+    }
+
     if(fn(gameSeatData.pengs) == false){
         return false;
     }
@@ -633,12 +664,21 @@ function chaJiao(game){
     }
 }
 
+function isHuazhu(gameSeatData) {
+    for(var i = 0; i< gameSeatData.holds.length; i++) {
+        if (getMJType(gameSeatData.holds[i]) === gameSeatData.que) {
+            return true;
+        }
+    }
+    return false;
+}
+
 function calculateResult(game,roomInfo){
     
-    var isNeedChaDaJia = needChaDaJiao(game);
-    if(isNeedChaDaJia){
-        chaJiao(game);
-    }
+    // var isNeedChaDaJia = needChaDaJiao(game);
+    // if(isNeedChaDaJia){
+    //     chaJiao(game);
+    // }
     
     var baseScore = game.conf.baseScore;
     var numOfHued = 0;
@@ -661,24 +701,30 @@ function calculateResult(game,roomInfo){
             //基础番(平胡0番，对对胡1番、七对2番) + 清一色2番 + 杠+1番
             //杠上花+1番，杠上炮+1番 抢杠胡+1番，金钩胡+1番，海底胡+1番
             var fan = sd.fan;
+            console.log("fan1: ", fan);
             if(isQingYiSe(sd)){
                 sd.qingyise = true;
                 fan += 2;
             }
             
-            var numOfGangs = sd.diangangs.length + sd.wangangs.length + sd.angangs.length;
-            for(var j = 0; j < sd.pengs.length; ++j){
-                var pai = sd.pengs[j];
-                if(sd.countMap[pai] == 1){
-                    numOfGangs++;
-                }
-            }
+            // var numOfGangs = sd.diangangs.length + sd.wangangs.length + sd.angangs.length;
+            // for(var j = 0; j < sd.pengs.length; ++j){
+            //     var pai = sd.pengs[j];
+            //     if(sd.countMap[pai] == 1){
+            //         numOfGangs++;
+            //     }
+            // }
+            // for(var k in sd.countMap){
+            //     if(sd.countMap[k] == 4){
+            //         numOfGangs++;
+            //     }
+            // }
             for(var k in sd.countMap){
                 if(sd.countMap[k] == 4){
-                    numOfGangs++;
+                    sd.numofgen++;
                 }
             }
-            sd.numofgen = numOfGangs;
+            // sd.numofgen = numOfGangs;
             
             //金钩胡
             if(sd.holds.length == 1 || sd.holds.length == 2){
@@ -689,13 +735,18 @@ function calculateResult(game,roomInfo){
             if(sd.isHaiDiHu){
                 fan += 1;
             }
+
+            if (isDuanYaoJiu(sd)) {
+                sd.isDuanYaoJiu = true;
+                fan += 1;
+            }
             
             if(game.conf.tiandihu){
                 if(sd.isTianHu){
-                    fan += 3;
+                    fan += 5;
                 }
                 else if(sd.isDiHu){
-                    fan += 2;
+                    fan += 5;
                 }
             }
             
@@ -726,12 +777,12 @@ function calculateResult(game,roomInfo){
             
             if(game.conf.menqing){
                 //不是将对，才检查中张
-                if(!isjiangdui){
-                    sd.isZhongZhang = isZhongZhang(sd);
-                    if(sd.isZhongZhang){
-                        fan += 1;
-                    }                
-                }
+                // if(!isjiangdui){
+                //     sd.isZhongZhang = isZhongZhang(sd);
+                //     if(sd.isZhongZhang){
+                //         fan += 1;
+                //     }                
+                // }
                 
                 sd.isMenQing = isMenQing(sd);
                 if(sd.isMenQing){
@@ -739,7 +790,7 @@ function calculateResult(game,roomInfo){
                 }                
             }
             
-            fan += sd.numofgen;
+            fan += sd.numofgen ? sd.numofgen : 0;
             if(sd.isGangHu){
                 fan += 1;
             }
@@ -754,11 +805,12 @@ function calculateResult(game,roomInfo){
                 if(ac.type == "fanggang"){
                     var ts = game.gameSeats[ac.targets[0]];
                     //检查放杠的情况，如果目标没有和牌，且没有叫牌，则不算 用于优化前端显示
-                    if(isNeedChaDaJia && (ts.hued) == false && (isTinged(ts) == false)){
+                    if((ts.hued) == false && (isTinged(ts) == false)){
                         ac.state = "nop";
                     }
                 }
                 else if(ac.type == "angang" || ac.type == "wangang" || ac.type == "diangang"){
+                    console.log("action: ", ac);
                     if(ac.state != "nop"){
                         var acscore = ac.score;
                         additonalscore += ac.targets.length * acscore * baseScore;
@@ -833,6 +885,8 @@ function calculateResult(game,roomInfo){
                 }
             }
 
+            console.log("fan4: ", fan);
+
             if(fan > game.conf.maxFan){
                 fan = game.conf.maxFan;
             }
@@ -840,6 +894,8 @@ function calculateResult(game,roomInfo){
             sd.score += additonalscore;
             if(sd.pattern != null){
                 sd.fan = fan;
+                console.log("fan2: ", fan);
+                console.log("fan3: ", sd.fan);
             }
         }
         else{
@@ -860,6 +916,26 @@ function calculateResult(game,roomInfo){
                                 game.gameSeats[six].score -= acscore * baseScore;
                             }                   
                         }   
+                    }
+                }
+            }
+
+            // 查花猪
+            if (numOfHued < 3) {
+                var huazhuScore = baseScore * 16;
+                if (isHuazhu(sd)) {
+                    for(var j = 0; j < game.gameSeats.length; j++) {
+                        var targetSeatData = game.gameSeats[j];
+                        if (j!==i && !targetSeatData.hued && !isHuazhu(targetSeatData)) {
+                            targetSeatData.chahuazhu = true;
+                            sd.beichahuazhu = true;
+                            targetSeatData.score += huazhuScore;
+                            sd.score -= huazhuScore;
+                            recordUserAction(game,targetSeatData,"chahuazhu",i);
+                        }
+                    }
+                    if (sd.beichahuazhu) {
+                        recordUserAction(game,sd,"beichahuazhu",-1);
                     }
                 }
             }
@@ -928,9 +1004,11 @@ function doGameOver(game,userId,forceEnd){
             rs.numAnGang += sd.numAnGang;
             rs.numMingGang += sd.numMingGang;
             rs.numChaJiao += sd.numChaJiao;
+            console.log("fan3: ", sd.fan);
             
             var userRT = {
                 userId:sd.userId,
+                seatIndex:sd.seatIndex,
                 pengs:sd.pengs,
                 actions:[],
                 wangangs:sd.wangangs,
@@ -945,17 +1023,21 @@ function doGameOver(game,userId,forceEnd){
                 pattern:sd.pattern,
                 isganghu:sd.isGangHu,
                 menqing:sd.isMenQing,
+                duanyaojiu:sd.isDuanYaoJiu,
                 zhongzhang:sd.isZhongZhang,
                 jingouhu:sd.isJinGouHu,
                 haidihu:sd.isHaiDiHu,
                 tianhu:sd.isTianHu,
                 dihu:sd.isDiHu,
+                chahuazhu:sd.chahuazhu,
+                beichahuazhu:sd.beichahuazhu,
                 huorder:game.hupaiList.indexOf(i),
             };
             
             for(var k in sd.actions){
                 userRT.actions[k] = {
                     type:sd.actions[k].type,
+                    targets:sd.actions[k].targets
                 };
             }
             results.push(userRT);
@@ -1097,6 +1179,7 @@ exports.setReady = function(userId,callback){
                 que:sd.que,
                 hued:sd.hued,
                 iszimo:sd.iszimo,
+                chupaiCnt:sd.chupaiCnt
             }
             if(sd.userId == userId){
                 s.holds = sd.holds;
@@ -1224,6 +1307,7 @@ exports.begin = function(roomId) {
         data.pengs = [];
         //缺一门
         data.que = -1;
+        data.chupaiCnt = 0;
 
         //换三张的牌
         data.huanpais = null;
@@ -1547,6 +1631,7 @@ exports.chuPai = function(userId,pai){
     
     seatData.canChuPai = false;
     game.chupaiCnt ++;
+    seatData.chupaiCnt++;
     seatData.guoHuFan = -1;
     
     seatData.holds.splice(index,1);
@@ -2038,9 +2123,12 @@ exports.hu = function(userId){
         if(game.chupaiCnt == 0 && game.button == seatData.seatIndex && game.chuPai == -1){
             seatData.isTianHu = true;
         }
-        else if(game.chupaiCnt == 1 && game.turn == game.button && game.button != seatData.seatIndex && game.chuPai != -1){
+        // else if(game.chupaiCnt == 1 && game.turn == game.button && game.button != seatData.seatIndex && game.chuPai != -1){
+        //     seatData.isDiHu = true;   
+        // }
+        else if(seatData.iszimo && seatData.chupaiCnt === 0){
             seatData.isDiHu = true;   
-        }   
+        }
     }
 
     clearAllOptions(game,seatData);

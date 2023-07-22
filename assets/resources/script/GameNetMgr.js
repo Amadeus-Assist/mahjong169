@@ -374,6 +374,7 @@ cc.Class({
         cc.vv.net.addHandler("game_over_push",function(data){
             console.log('game_over_push');
             var results = data.results;
+            console.log("result in game_over_push: ", results);
             for(var i = 0; i <  self.seats.length; ++i){
                 self.seats[i].score = results.length == 0? 0:results[i].totalscore;
             }

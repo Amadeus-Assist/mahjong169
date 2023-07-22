@@ -137,7 +137,7 @@ cc.Class({
         //持牌
         this.node.on('game_holds',function(data){
            self.initMahjongs();
-           self.checkQueYiMen();
+        //    self.checkQueYiMen();
         });
         //开始
         this.node.on('game_begin',function(data){
@@ -152,7 +152,7 @@ cc.Class({
             console.log("game_chupai, data: ", data);
             data = data;
             self.hideChupai();
-            self.checkQueYiMen();
+            // self.checkQueYiMen();
             if(data.last != cc.vv.gameNetMgr.seatIndex){
                 self.initMopai(data.last,null);   
             }
@@ -210,9 +210,6 @@ cc.Class({
                 } 
             }
             else{
-                console.log("hupai, hupai.getChildByName('sprHu'): ", hupai.getChildByName("sprHu"));
-                console.log("hupai, hupai.getChildByName('sprZimo'): ", hupai.getChildByName("sprZimo"));
-                console.log("hupai, data.iszimo: ", data.iszimo);
                 hupai.getChildByName("sprHu").active = !data.iszimo;
                 hupai.getChildByName("sprZimo").active = data.iszimo;
                 
@@ -504,10 +501,11 @@ cc.Class({
             cc.vv.gameNetMgr.curaction = null;
         }
         
-        this.checkQueYiMen();
+        // this.checkQueYiMen();
     },
     
     onMJClicked:function(event){
+        cc.vv.audioMgr.playSFX("select.mp3");
         if(cc.vv.gameNetMgr.isHuanSanZhang){
             this.node.emit("mj_clicked",event.target);
             return;
