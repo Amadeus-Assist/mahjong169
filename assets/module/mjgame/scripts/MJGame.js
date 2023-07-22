@@ -72,7 +72,7 @@ cc.Class({
         this._mjcount = gameChild.getChildByName('mjcount').getComponent(cc.Label);
         this._mjcount.string = "剩余" + cc.vv.gameNetMgr.numOfMJ + "张";
         this._gamecount = gameChild.getChildByName('gamecount').getComponent(cc.Label);
-        this._gamecount.string = "" + cc.vv.gameNetMgr.numOfGames + "/" + cc.vv.gameNetMgr.maxNumOfGames + "局";
+        this._gamecount.string = "第" + cc.vv.gameNetMgr.numOfGames + "局";
         //取到手牌节点
         var myselfChild = gameChild.getChildByName("myself"); 
         var myholds = myselfChild.getChildByName("holds");

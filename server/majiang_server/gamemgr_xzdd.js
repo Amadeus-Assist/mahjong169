@@ -1854,12 +1854,12 @@ function doGang(game,turnSeat,seatData,gangtype,numOfCnt,pai){
     if(gangtype == "angang"){
         seatData.angangs.push(pai);
         var ac = recordUserAction(game,seatData,"angang");
-        ac.score = game.conf.baseScore*2;
+        ac.score = 2;
     }
     else if(gangtype == "diangang"){
         seatData.diangangs.push(pai);
         var ac = recordUserAction(game,seatData,"diangang",gameTurn);
-        ac.score = game.conf.baseScore*2;
+        ac.score = 2;
         var fs = turnSeat;
         recordUserAction(game,fs,"fanggang",seatIndex);
     }
@@ -1867,7 +1867,7 @@ function doGang(game,turnSeat,seatData,gangtype,numOfCnt,pai){
         seatData.wangangs.push(pai);
         if(isZhuanShouGang == false){
             var ac = recordUserAction(game,seatData,"wangang");
-            ac.score = game.conf.baseScore;            
+            ac.score = 1;            
         }
         else{
             recordUserAction(game,seatData,"zhuanshougang");

@@ -8813,7 +8813,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -55,
+        -0.605,
         -74,
         0,
         0,
@@ -8906,7 +8906,7 @@
       "__id__": 229
     },
     "_children": [],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 235
@@ -73689,7 +73689,7 @@
       "__id__": 1910
     },
     "_children": [],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 1914
