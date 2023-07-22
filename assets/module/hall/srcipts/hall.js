@@ -263,12 +263,12 @@ cc.Class({
     },
      //显示节点
      shownode:function(){
-        this.dezhoupk.node.active=true
-        this.doudizhu.node.active=true
+        this.dezhoupk.node.active=false
+        this.doudizhu.node.active=false
         this.xzmj.node.active=true
-        this.ermj.node.active=true
-        this.xiangqi.node.active=true
-        this.buyu.node.active=true
+        this.ermj.node.active=false
+        this.xiangqi.node.active=false
+        this.buyu.node.active=false
         this.sencond.active=false
         this.logoutBtn.active=true
     },

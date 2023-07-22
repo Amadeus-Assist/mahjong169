@@ -7800,8 +7800,8 @@
     "target": {
       "__id__": 2
     },
-    "component": "hall",
-    "_componentId": "",
+    "component": "",
+    "_componentId": "a63d9t3AuBKVLfInT9JAVaH",
     "handler": "onReturnGameClicked",
     "customEventData": ""
   },
