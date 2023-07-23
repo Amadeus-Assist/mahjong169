@@ -249,8 +249,7 @@ exports.start = function(config,mgr){
 			if(socket.userId == null){
 				return;
 			}
-			var phizId = data;
-			userMgr.broacastInRoom('emoji_push',{sender:socket.userId,content:phizId},socket.userId,true);
+			userMgr.broacastInRoom('emoji_push',{sender:socket.userId,content:data},socket.userId,true);
 		});
 		
 		//语音使用SDK不出现在这里

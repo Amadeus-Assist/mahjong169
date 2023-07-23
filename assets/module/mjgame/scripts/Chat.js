@@ -82,10 +82,10 @@ cc.Class({
         cc.vv.net.send("quick_chat",info.index); 
     },
     
-    onEmojiItemClicked:function(event){
-        console.log(event.target.name);
+    onEmojiItemClicked:function(event,loop){
+        console.log("onEmojiItemClicked, event name: ",event.target.name, "loop: ", Number(loop));
         this._chatRoot.active = false;
-        cc.vv.net.send("emoji",event.target.name);
+        cc.vv.net.send("emoji",{name:event.target.name,loop:Number(loop)});
     },
     
     onBtnSendChatClicked:function(){

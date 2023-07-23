@@ -969,6 +969,7 @@ function doGameOver(game,userId,forceEnd){
                     numangang:rs.numAnGang,
                     numminggang:rs.numMingGang,
                     numchadajiao:rs.numChaJiao, 
+                    score:rs.score
                 });
             }   
         }
@@ -1850,11 +1851,18 @@ function doGang(game,turnSeat,seatData,gangtype,numOfCnt,pai){
 
     recordGameAction(game,seatData.seatIndex,ACTION_GANG,pai);
 
+    var targetUsers = [];
+
     //记录下玩家的杠牌
     if(gangtype == "angang"){
         seatData.angangs.push(pai);
         var ac = recordUserAction(game,seatData,"angang");
         ac.score = 1;
+        for(var i = 0;i<game.gameSeats.length; ++i) {
+            if (i != seatData.seatIndex && game.gameSeats[i].hued == false) {
+                targetUsers.push(game.gameSeats[i].userId);
+            }
+        }
     }
     else if(gangtype == "diangang"){
         seatData.diangangs.push(pai);
@@ -1862,12 +1870,18 @@ function doGang(game,turnSeat,seatData,gangtype,numOfCnt,pai){
         ac.score = 1;
         var fs = turnSeat;
         recordUserAction(game,fs,"fanggang",seatIndex);
+        targetUsers.push(game.gameSeats[gameTurn].userId);
     }
     else if(gangtype == "wangang"){
         seatData.wangangs.push(pai);
         if(isZhuanShouGang == false){
             var ac = recordUserAction(game,seatData,"wangang");
-            ac.score = 1;            
+            ac.score = 1;
+            for(var i = 0;i<game.gameSeats.length; ++i) {
+                if (i != seatData.seatIndex && game.gameSeats[i].hued == false) {
+                    targetUsers.push(game.gameSeats[i].userId);
+                }
+            }   
         }
         else{
             recordUserAction(game,seatData,"zhuanshougang");
@@ -1876,7 +1890,7 @@ function doGang(game,turnSeat,seatData,gangtype,numOfCnt,pai){
 
     checkCanTingPai(game,seatData);
     //通知其他玩家，有人杠了牌
-    userMgr.broacastInRoom('gang_notify_push',{userid:seatData.userId,pai:pai,gangtype:gangtype},seatData.userId,true);
+    userMgr.broacastInRoom('gang_notify_push',{userid:seatData.userId,pai:pai,gangtype:gangtype,targetUsers:targetUsers},seatData.userId,true);
 
     //变成自己的轮子
     moveToNextUser(game,seatIndex);

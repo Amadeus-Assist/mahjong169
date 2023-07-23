@@ -472,7 +472,11 @@ cc.Class({
             var userId = data.userid;
             var pai = data.pai;
             var si = self.getSeatIndexByID(userId);
-            self.doGang(si,pai,data.gangtype);
+            var targetUserSi = [];
+            for(var i = 0;i<data.targetUsers.length;i++) {
+                targetUserSi.push(self.getSeatIndexByID(data.targetUsers[i]));
+            }
+            self.doGang(si,pai,data.gangtype,targetUserSi);
         });
         
         cc.vv.net.addHandler("game_dingque_notify_push",function(data){
@@ -578,7 +582,7 @@ cc.Class({
         }
     },
     
-    doGang:function(seatIndex,pai,gangtype){
+    doGang:function(seatIndex,pai,gangtype,targetUserSi){
         var seatData = this.seats[seatIndex];
         
         if(!gangtype){
@@ -610,7 +614,7 @@ cc.Class({
         else if(gangtype == "diangang"){
             seatData.diangangs.push(pai);
         }
-        this.dispatchEvent('gang_notify',{seatData:seatData,gangtype:gangtype});
+        this.dispatchEvent('gang_notify',{seatData:seatData,gangtype:gangtype,targetUserSi:targetUserSi});
     },
     
     doHu:function(data){

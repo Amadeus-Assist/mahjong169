@@ -69,6 +69,9 @@ cc.Class({
         this._emoji = this.node.getChildByName("emoji");
         if(this._emoji != null){
             this._emoji.active = false;
+            var emojiAni = this._emoji.getComponent(cc.Animation);
+            emojiAni.on("stop",this.onEmojiStop,emojiAni);
+
         }
         
         this.refresh();
@@ -76,6 +79,10 @@ cc.Class({
         if(this._sprIcon && this._userId){
             this._sprIcon.setUserID(this._userId);
         }
+    },
+
+    onEmojiStop:function(event){
+        this.node.active=false;
     },
     
     onIconClicked:function(){
@@ -189,10 +196,14 @@ cc.Class({
         if(this._emoji == null || this._emoji == null){
             return;
         }
-        console.log(emoji);
+        emoji = JSON.parse(emoji);
+        console.log(emoji, "name: ", emoji["name"]);
         this._chatBubble.active = false;
         this._emoji.active = true;
-        this._emoji.getComponent(cc.Animation).play(emoji);
+        var aniState = this._emoji.getComponent(cc.Animation).play(emoji.name);
+        console.log("emoji, aniState: ", aniState);
+        aniState.wrapMode = cc.WrapMode.Loop;
+        aniState.repeatCount = emoji.loop;
         this._lastChatTime = 3;
     },
     

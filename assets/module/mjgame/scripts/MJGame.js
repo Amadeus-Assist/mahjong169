@@ -96,7 +96,9 @@ cc.Class({
             var sideChild = gameChild.getChildByName(side);
             this._hupaiTips.push(sideChild.getChildByName("HuPai"));
             this._hupaiLists.push(sideChild.getChildByName("hupailist"));
-            this._playEfxs.push(sideChild.getChildByName("play_efx").getComponent(cc.Animation));
+            var playEfxAni = sideChild.getChildByName("play_efx").getComponent(cc.Animation);
+            playEfxAni.on("stop",this.onPlayEfxStop,playEfxAni);
+            this._playEfxs.push(playEfxAni);
             //出牌数组将出牌节点获取进来
             this._chupaiSprite.push(sideChild.getChildByName("ChuPai").children[0].getComponent(cc.Sprite));
             //获取胡后显示节点
@@ -118,6 +120,10 @@ cc.Class({
         this._options = opts; 
         this.hideOptions();
         this.hideChupai();
+    },
+
+    onPlayEfxStop:function(event){
+        this.node.active=false;
     },
     
     //隐藏出牌
@@ -229,10 +235,10 @@ cc.Class({
             }
             
             if(data.iszimo){
-                self.playEfx(localIndex,"play_zimo");    
+                self.playEfx(localIndex,"zimo");    
             }
             else{
-                self.playEfx(localIndex,"play_hu");
+                self.playEfx(localIndex,"hu");
             }
             
             cc.vv.audioMgr.playSFX("nv/hu.mp3");
@@ -298,7 +304,7 @@ cc.Class({
                 self.initOtherMahjongs(seatData);
             }
             var localIndex = self.getLocalIndex(seatData.seatindex);
-            self.playEfx(localIndex,"play_peng");
+            self.playEfx(localIndex,"peng");
             cc.vv.audioMgr.playSFX("nv/peng.mp3");
             self.hideOptions();
         });
@@ -317,21 +323,31 @@ cc.Class({
             }
             
             var localIndex = self.getLocalIndex(seatData.seatindex);
-            if(gangtype == "wangang"){
-                self.playEfx(localIndex,"play_guafeng");
-                cc.vv.audioMgr.playSFX("guafeng.mp3");
-            }
-            else{
-                self.playEfx(localIndex,"play_xiayu");
-                cc.vv.audioMgr.playSFX("rain.mp3");
+            cc.vv.audioMgr.playSFX("nv/gang.mp3");
+            if (data.targetUserSi) {
+                // if(gangtype == "wangang"){
+                //     self.playEfx(localIndex,"gang_guafang");
+                //     cc.vv.audioMgr.playSFX("guafeng.mp3");
+                // }
+                // else{
+                //     self.playEfx(localIndex,"play_xiayu");
+                //     cc.vv.audioMgr.playSFX("rain.mp3");
+                // }
+                for(var i = 0;i<data.targetUserSi.length;i++) {
+                    if (gangtype == "angang") {
+                        self.playEfx(data.targetUserSi[i],"gang");
+                    }else if (gangtype != "zhuanshougang"){
+                        self.playEfx(data.targetUserSi[i],"gang_guafeng");
+                    }
+                }
             }
         });
         //暗杠
         this.node.on("hangang_notify",function(data){
-            var data = data;
-            var localIndex = self.getLocalIndex(data);
-            self.playEfx(localIndex,"play_gang");
-            cc.vv.audioMgr.playSFX("nv/gang.mp3");
+            // var data = data;
+            // var localIndex = self.getLocalIndex(data);
+            // self.playEfx(localIndex,"play_gang");
+            // cc.vv.audioMgr.playSFX("nv/gang.mp3");
             self.hideOptions();
         });
     },

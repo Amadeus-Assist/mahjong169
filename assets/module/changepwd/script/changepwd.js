@@ -40,7 +40,15 @@ cc.Class({
         }
         console.log("alert in changepwd: ", this.alertLabel);
         cc.vv.changePwdAlert = this.alertLabel;
+        var guafeng = cc.find("guafeng", this.node).getComponent(cc.Animation);
+        guafeng.on("stop",this.onAnimationStop,guafeng);
         // cc.vv.changePwdAlert.alertLabel.node.active=false;
+    },
+
+    onAnimationStop:function(event){
+        console.log("onAnimationStop, event: ", event);
+        console.log("onAnimationStop, this: ", this);
+        this.node.active=false;
     },
 
     start () {
@@ -64,6 +72,14 @@ cc.Class({
 
     onConfirmBtnClicked:function() {
         cc.vv.userMgr.changePwd(this.account.string,this.prevPassword.string,this.newPassword.string,this.onChangePwd);
+    },
+
+    onGuafengClicked:function() {
+        console.log("this.node: ", this.node);
+        var guafeng = cc.find("guafeng", this.node);
+        console.log("guafeng: ", guafeng);
+        guafeng.active=true;
+        guafeng.getComponent(cc.Animation).play("peng");
     }
 
     // update (dt) {},
