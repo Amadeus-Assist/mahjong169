@@ -568,8 +568,153 @@ function isDuanYaoJiu(gameSeatData) {
     if(fn(gameSeatData.wangangs) == false){
         return false;
     }
+    if(fn(gameSeatData.zhuanshougangs) == false) {
+        return false;
+    }
     if(fn(gameSeatData.holds) == false){
         return false;
+    }
+    return true;
+}
+
+function isDaiYaoJiu(gameSeatData) {
+    var checkOneNine = function(pai) {
+        return pai == 0 || pai == 8 || pai == 9
+        || pai == 17 || pai == 18 || pai == 26;
+    }
+
+    var fn = function(arr) {
+        for(var i = 0; i < arr.length; ++i){
+            var pai = arr[i];
+            if(!checkOneNine(pai)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    var formShun = function(pai, holds, visited) {
+        var step = 0;
+        if (pai == 0 || pai == 9 || pai == 18) {
+            step = 1;
+        }else{
+            step = -1;
+        }
+        var found = true;
+        var trackIdx = -1;
+        for(var i = 1;i<=2;i++) {
+            var tar = pai+(i*step);
+            var foundLocal = false;
+            for(var j = 0;j<holds.length;j++) {
+                if (!visited[j]&&holds[j]==tar) {
+                    foundLocal = true;
+                    visited[j] = true;
+                    if (i==1){
+                        trackIdx = j;
+                    }
+                    break;
+                }
+            }
+            if(!foundLocal) {
+                found = false;
+            }
+        }
+        if(!found && trackIdx >= 0) {
+            visited[trackIdx] = false;
+        }
+        return found;
+    }
+
+    var formPeng = function(pai, holds, visited) {
+        var found = true;
+        var trackIdx = -1;
+        for(var i = 1;i<=2;i++) {
+            var foundLocal = false;
+            for(var j = 0;j<holds.length;j++) {
+                if (!visited[j]&&holds[j]==pai) {
+                    foundLocal = true;
+                    visited[j] = true;
+                    if (i==1){
+                        trackIdx = j;
+                    }
+                    break;
+                }
+            }
+            if(!foundLocal) {
+                found = false;
+            }
+        }
+        if(!found && trackIdx >= 0) {
+            visited[trackIdx] = false;
+        }
+        return found;
+    }
+
+    var formDui = function(pai, holds, visited) {
+        for(var j = 0;j<holds.length;j++) {
+            if (!visited[j]&&holds[j]==pai) {
+                visited[j] = true;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    if(!gameSeatData.hued) {
+        return false;
+    }
+
+    if (gameSeatData.pattern == "duidui") {
+        return false;
+    }
+
+    if(fn(gameSeatData.pengs) == false){
+        return false;
+    }
+    if(fn(gameSeatData.angangs) == false){
+        return false;
+    }
+    if(fn(gameSeatData.diangangs) == false){
+        return false;
+    }
+    if(fn(gameSeatData.wangangs) == false){
+        return false;
+    }
+    if(fn(gameSeatData.zhuanshougangs) == false){
+        return false;
+    }
+
+    if (gameSeatData.pattern == "7pairs"){
+        return fn(gameSeatData.holds);
+    }
+
+    var hasDui = false;
+    var visited = [];
+    for(var i = 0;i<gameSeatData.holds.length;i++) {
+        visited.push(false);
+    }
+    for(var i = 0;i<gameSeatData.holds.length;i++) {
+        if (visited[i]) {
+            continue;
+        }
+        var pai = gameSeatData.holds[i];
+        if (checkOneNine(pai)) {
+            visited[i] = true;
+            if (!formShun(pai,gameSeatData.holds, visited)&&!formPeng(pai,gameSeatData.holds,visited)){
+                if (hasDui) {
+                    return false;
+                }
+                if (!formDui(pai, gameSeatData.holds, visited)){
+                    return false;
+                }
+                hasDui = true;
+            }
+        }
+    }
+    for(var i= 0;i<visited.length;i++) {
+        if (!visited[i]) {
+            return false;
+        }
     }
     return true;
 }
@@ -699,7 +844,7 @@ function calculateResult(game,roomInfo){
         if(isTinged(sd)){
             //统计自己的番子和分数
             //基础番(平胡0番，对对胡1番、七对2番) + 清一色2番 + 杠+1番
-            //杠上花+1番，杠上炮+1番 抢杠胡+1番，金钩胡+1番，海底胡+1番
+            //杠上花+1番，杠上炮+1番 抢杠胡+1番，金钩胡+1番，海底胡+1番，断幺九+1番，十八罗汉+4番
             var fan = sd.fan;
             console.log("fan1: ", fan);
             if(isQingYiSe(sd)){
@@ -728,8 +873,13 @@ function calculateResult(game,roomInfo){
             
             //金钩胡
             if(sd.holds.length == 1 || sd.holds.length == 2){
-                fan += 1;
-                sd.isJinGouHu = true;
+                if ((sd.diangangs.length + sd.wangangs.length + sd.angangs.length + sd.zhuanshougangs.length)==4) {
+                    fan+=4;
+                    sd.isShiBaLuoHan = true;
+                }else{
+                    fan += 1;
+                    sd.isJinGouHu = true;
+                }
             }
             
             if(sd.isHaiDiHu){
@@ -739,6 +889,11 @@ function calculateResult(game,roomInfo){
             if (isDuanYaoJiu(sd)) {
                 sd.isDuanYaoJiu = true;
                 fan += 1;
+            }
+
+            if(isDaiYaoJiu(sd)) {
+                sd.isDaiYaoJiu = true;
+                fan += 3;
             }
             
             if(game.conf.tiandihu){
@@ -1005,7 +1160,6 @@ function doGameOver(game,userId,forceEnd){
             rs.numAnGang += sd.numAnGang;
             rs.numMingGang += sd.numMingGang;
             rs.numChaJiao += sd.numChaJiao;
-            console.log("fan3: ", sd.fan);
             
             var userRT = {
                 userId:sd.userId,
@@ -1025,11 +1179,13 @@ function doGameOver(game,userId,forceEnd){
                 isganghu:sd.isGangHu,
                 menqing:sd.isMenQing,
                 duanyaojiu:sd.isDuanYaoJiu,
+                daiyaojiu:sd.isDaiYaoJiu,
                 zhongzhang:sd.isZhongZhang,
                 jingouhu:sd.isJinGouHu,
                 haidihu:sd.isHaiDiHu,
                 tianhu:sd.isTianHu,
                 dihu:sd.isDiHu,
+                shibaluohan:sd.isShiBaLuoHan,
                 chahuazhu:sd.chahuazhu,
                 beichahuazhu:sd.beichahuazhu,
                 huorder:game.hupaiList.indexOf(i),
@@ -1304,6 +1460,8 @@ exports.begin = function(roomId) {
         data.diangangs = [];
         //弯杠的牌
         data.wangangs = [];
+        //转手杠的牌
+        data.zhuanshougangs = [];
         //碰了的牌
         data.pengs = [];
         //缺一门
@@ -1884,6 +2042,7 @@ function doGang(game,turnSeat,seatData,gangtype,numOfCnt,pai){
             }   
         }
         else{
+            seatData.zhuanshougangs.push(pai);
             recordUserAction(game,seatData,"zhuanshougang");
         }
     }

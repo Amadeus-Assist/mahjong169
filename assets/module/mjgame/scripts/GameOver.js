@@ -148,7 +148,9 @@ cc.Class({
                         actionArr.push("将七对");
                     }
                     else if(userData.pattern == "duidui"){
-                        if(userData.jingouhu) {
+                        if(userData.shibaluohan) {
+                            actionArr.push("十八罗汉");
+                        }else if(userData.jingouhu) {
                             actionArr.push("金钩钓");
                         }else{
                             actionArr.push("碰碰胡");
@@ -156,6 +158,11 @@ cc.Class({
                     }
                     else if(userData.pattern == "jiangdui"){
                         actionArr.push("将对");
+                        if(userData.shibaluohan) {
+                            actionArr.push("十八罗汉");
+                        }else if (userData.jingouhu) {
+                            actionArr.push("金钩钓");
+                        }
                     }
                     
                     if(ac.type == "zimo"){
@@ -220,6 +227,10 @@ cc.Class({
 
                 if(userData.duanyaojiu) {
                     actionArr.push("断幺九");
+                }
+
+                if(userData.daiyaojiu) {
+                    actionArr.push("带幺九");
                 }
 
                 if(userData.qingyise){

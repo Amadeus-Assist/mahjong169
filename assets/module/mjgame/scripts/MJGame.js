@@ -335,9 +335,9 @@ cc.Class({
                 // }
                 for(var i = 0;i<data.targetUserSi.length;i++) {
                     if (gangtype == "angang") {
-                        self.playEfx(data.targetUserSi[i],"gang");
+                        self.playEfx(self.getLocalIndex(data.targetUserSi[i]),"gang");
                     }else if (gangtype != "zhuanshougang"){
-                        self.playEfx(data.targetUserSi[i],"gang_guafeng");
+                        self.playEfx(self.getLocalIndex(data.targetUserSi[i]),"gang_guafeng");
                     }
                 }
             }
